@@ -33,6 +33,24 @@ def process_order(order, products, customers, tax_rates):
 
     errors = validate_order(order, products, customers)
 
+    if errors:
+        return {
+            "order_id": order.get("id"),
+            "customer": customer["name"] if customer else "UNKNOWN",
+            "valid": False,
+            "errors": errors,
+            "subtotal": 0,
+            "discounts": {
+                "coupon_discount": 0,
+                "loyalty_discount": 0,
+                "bulk_discount": 0,
+                "discounted_subtotal": 0,
+            },
+            "tax": 0,
+            "shipping": 0,
+            "total": 0,
+        }
+
     subtotal = calculate_subtotal(order, products)
     discounts = apply_discounts(order, customer, products, subtotal)
     tax = calculate_tax(customer, subtotal, tax_rates)
